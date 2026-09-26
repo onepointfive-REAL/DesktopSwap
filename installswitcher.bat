@@ -1,0 +1,23 @@
+@echo off
+title Installer
+echo Installer
+echo Must have wind hawk 2.0 beta or higher
+echo Run me as admin
+echo.
+echo Copying the toggle file to %USERPROFILE%...
+copy /Y "%~dp0toggle.bat" "%USERPROFILE%\toggle.bat"
+echo Installing windhawk taskbar switcher...
+"%ProgramFiles%\Windhawk\windhawk-cli.exe" mod install taskbar-primary-on-secondary-monitor
+echo Disabling switcher...
+"%ProgramFiles%\Windhawk\windhawk-cli.exe" mod disable taskbar-primary-on-secondary-monitor
+echo Telling switcher to move additonal elements...
+"%ProgramFiles%\Windhawk\windhawk-cli.exe" mod settings set taskbar-primary-on-secondary-monitor "moveAdditionalElements"=1
+echo Making task...
+powershell -NoProfile -Command "$bat = '%USERPROFILE%\toggle.bat'; $a = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument ('/c ""' + $bat + '""'); $p = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Highest; Register-ScheduledTask -TaskName 'Toggle Bar' -Action $a -Principal $p -Force"
+echo Making desktop shortcut (you can pin to taskbar too)...
+powershell -NoProfile -Command "$ws=New-Object -ComObject WScript.Shell; $s=$ws.CreateShortcut('%USERPROFILE%\Desktop\Toggle Bar.lnk'); $s.TargetPath='%WINDIR%\System32\schtasks.exe'; $s.Arguments='/run /tn ""Toggle Bar""'; $s.IconLocation='%WINDIR%\System32\shell32.dll,46'; $s.Save()"
+echo Restarting explorer...
+taskkill /f /im explorer.exe
+start explorer.exe
+echo Done!
+pause
