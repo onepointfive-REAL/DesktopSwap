@@ -6,3 +6,7 @@ Intructions:
 2. Extract the ZIP
 3. Run the "RUN ME - installer.bat"
 4. Allow admin
+   
+Credits:
+https://github.com/ramensoftware/windhawk
+https://windhawk.net/mods/taskbar-primary-on-secondary-monitor
